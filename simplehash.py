@@ -7,15 +7,15 @@
 from PIL import Image
 import numpy as np
 
-thumbnail_size = (8,8)
+DEFAULT_THUMBNAIL_SIZE = (8,8)
 
 
 def grey_scale(row):
     return sum(row)/row.size
 
 
-def process_image(image):
-    image = image.resize(thumbnail_size)
+def process_image(image, thumbnail_size = DEFAULT_THUMBNAIL_SIZE):
+    image = image.resize(thumbnail_size).convert("RGB")
     np_array = np.asarray(image.getdata())
     return np.apply_along_axis(grey_scale, axis=1, arr=np_array)
 
@@ -24,10 +24,10 @@ def back_to_image(grey_scale_image):
     return Image.fromarray(np.uint8(grey_scale_image.reshape(thumbnail_size)),mode="L")
 
 
-def image_hash(image):
-    image_array = process_image(image)
-    bits = 0
-    mean = int(np.mean(image_array))
+def image_hash(image, thumbnail_size = DEFAULT_THUMBNAIL_SIZE):
+    image_array = process_image(image, thumbnail_size)
+    bits = long(0)
+    mean = long(np.mean(image_array))
     for i,n in enumerate(image_array):
         bits |= (n > mean) << i
 
@@ -50,6 +50,7 @@ def get_similarity(image1, image2):
     Returns the distance between two images.
     <= 5 likely similar
     >= 10 they're probably quite different
+    (Note: these numbers are when the thumbnail size is 8x8)
     """
     return hamming_dist(image_hash(image1),image_hash(image2))
 
