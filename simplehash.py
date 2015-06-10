@@ -1,4 +1,4 @@
-#!/bin/env python2
+#!/usr/bin/env python2
 
 # Author: James Jenkins (appplesmacs@yahoo.com)
 # Based off handy information/tutorial at
