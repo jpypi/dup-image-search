@@ -32,6 +32,14 @@ def alpha(value):
         return 1
 
 
+def shiftCenter(matrix,shift=-128):
+    # Warning! This is a destructive function!
+    width = len(matrix[0])
+    for r in xrange(len(matrix)):
+        for c in xrange(width):
+            matrix[r][c]+=shift
+
+
 def DCTII2D(matrix):
     X=len(matrix[0])
     Y=len(matrix)
@@ -45,7 +53,12 @@ def DCTII2D(matrix):
                 for x in xrange(X):
                     outer_sum += matrix[y][x] * cos((2*x+1)*u*pi/(2*X)) * cos((2*y+1)*v*pi/(2*Y))
 
-            new_matrix[v][u]=1.0/4*alpha(u)*alpha(v)*outer_sum
+            # This is the JPEG version of DCT:
+            #new_matrix[v][u]=1.0/4*alpha(u)*alpha(v)*outer_sum
+
+            # I think this is the plain version, which works better for
+            # image similarity for my test image and has less junk
+            new_matrix[v][u]=outer_sum
 
     return new_matrix
 
@@ -73,8 +86,7 @@ if __name__=="__main__":
 
     # Decrease the dynamic range
     # (aka shift the values so they're centered about 0
-    for i in xrange(len(v)):
-        v[i] = map(lambda x:x-128,v[i])
+    v = shiftCenter(v)
 
     nicePrint(v)
 
