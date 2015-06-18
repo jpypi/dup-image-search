@@ -29,10 +29,9 @@ def main(argv):
                 image = image.resize((8, 8))
             except IndexError:
                 print "{0} Index Error".format(filename)
-                return
             except IOError:
-                print "{0} IO Error".format(filename)
-                return
+                continue
+            #print "{0} IO Error".format(filename)
 
             hasher = hashlib.md5()
             with open(filename, "rb") as f:

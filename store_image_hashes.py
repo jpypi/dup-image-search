@@ -31,7 +31,7 @@ def check_if_similar_image_found(db_conn, type, hash):
         while row:
             row_hash = int(row[0])
             distance = image_utils.hamming_distance(row_hash, hash)
-            if(distance < 6):
+            if(distance < 3):
                 return (False, True, row[2])
 
             row = db_result.fetchone()
@@ -49,7 +49,8 @@ def try_insert_image(db_conn, filename):
         print "Caught IndexError. Image is corrupt: {0}".format(filename)
         return
     except IOError:
-        print "Caught IOError. Image is corrupt: {0}".format(filename)
+        # This can happen sometimes randomly
+        #print "Caught IOError. Image is corrupt: {0}".format(filename)
         return
 
     (exactly, likely, source_filename) = check_if_similar_image_found(db_conn, "simple", hash)
