@@ -82,6 +82,9 @@ def main(argv):
                     corruption_counter += 1
 
             line_counter += 1
+            if(line_counter % 50000 == 0):
+                print "Status update: scanned {0!s} files.".format(line_counter)
+
             line = f.readline()
 
     print "Scanned {0!s} files.".format(line_counter)
