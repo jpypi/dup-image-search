@@ -38,8 +38,6 @@ def main(argv):
     parser.add_argument("filename", help="file containing hashes")
     args = parser.parse_args()
 
-    hashes = {}
-
     duplicates_file = open("exact_duplicates.txt", "w")
     corruption_file = open("corrupt_images.txt", "w")
 
@@ -47,16 +45,21 @@ def main(argv):
     duplicate_counter = 0
     corruption_counter = 0
 
+
     with open(args.filename, "r") as f:
+    
+        last_hash = None
+        identical_hash_filenames = []
+
         line = f.readline()
         while line:
             line_arr = line.strip().split()
             hash = line_arr[0]
-            image_filename = line_arr[1]
+            image_filename = " ".join(line_arr[1:])
 
-            if hash in hashes.keys():
+            if(hash == last_hash):
                 found = False
-                for file in hashes[hash]:
+                for file in identical_hash_filenames:
                     if(filecmp.cmp(image_filename, file)):
                         duplicates_file.write(
                             "{0},{1}\n".format(image_filename, file))
@@ -66,7 +69,7 @@ def main(argv):
 
                 if(not found):
                     if(is_valid_image(image_filename)):
-                        hashes[hash].append(image_filename)
+                        identical_hash_filenames.append(image_filename)
                     else:
                         corruption_file.write(
                             "{0}\n".format(image_filename))
@@ -74,13 +77,14 @@ def main(argv):
 
             else:
                 if(is_valid_image(image_filename)):
-                    hashes[hash] = []
-                    hashes[hash].append(image_filename)
+                    identical_hash_filenames = [image_filename]
                 else:
+                    identical_hash_filenames = []
                     corruption_file.write(
                         "{0}\n".format(image_filename))
                     corruption_counter += 1
 
+            last_hash = hash
             line_counter += 1
             if(line_counter % 50000 == 0):
                 print "Status update: scanned {0!s} files.".format(line_counter)
