@@ -22,7 +22,7 @@ def main(argv):
         line = f.readline()
         total = 0
         while line:
-            filepath =  (line.strip().split(","))[0]
+            filepath = (line.strip().split(","))[0]
             statinfo = os.stat(filepath)
             total += statinfo.st_size
             line = f.readline()

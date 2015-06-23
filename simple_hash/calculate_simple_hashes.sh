@@ -12,14 +12,6 @@ do
     echo "Calculating hashes for the '${i}' directory."
     SUB_DIR="${BASE_DIR}/${i}"
 
-    # 17 min 41 sec on "a"
-    ls -1 -Q $SUB_DIR | xargs -i{} md5sum $SUB_DIR/{} >> md5sums.txt
+    ls -1 -Q $SUB_DIR | xargs -i{} python simple_hash.py $SUB_DIR/{} >> simple_hashes.txt
 
-    # 18 min 23 sec on "a"
-    #find $SUB_DIR -type f -exec md5sum {} \; >> md5sums.txt
 done
-
-sort md5sums.txt > md5sums_sorted.txt
-echo "Completed hashing."
-
-#python detect_exact_image_duplicates.py md5sums_sorted.txt
