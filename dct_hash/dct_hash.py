@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 """
     dct_hash.py
 
@@ -9,8 +10,12 @@
     :author: James Jenkins
     :license: MIT
 """
-from scipy import fftpack
+import sys
+import argparse
 import numpy
+
+from scipy import fftpack
+from PIL import Image
 
 
 def calculate_dct_hash(image):
@@ -60,3 +65,20 @@ def calculate_DCTII_2D(matrix):
     """
 
     return fftpack.dct(fftpack.dct(numpy.array(matrix), axis=0), axis=1)
+
+
+def main(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filepath")
+    parser.add_argument("-a", "--algorithm", default="simple",
+                        help="Algorithm to use.  One of: [simple, dct]")
+    args = parser.parse_args()
+    args.algorithm = args.algorithm.lower()
+
+    image = Image.open(args.filepath)
+    hash = calculate_dct_hash(image)
+    print "DCT hash = {0!s}".format(hash)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
