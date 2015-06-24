@@ -46,7 +46,7 @@ def calculate_dct_hash(image):
 
     # Top left only
     smaller_dct = dct_data[:8, :8]
-    average = numpy.mean(smaller_dct)
+    average = (numpy.sum(smaller_dct) - smaller_dct[0,0])/64
 
     hash = 0
     i = 0
