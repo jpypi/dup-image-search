@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 """
-    dct_hash.py
+    fast_dct_hash.py
 
     Generates a hash using the "DCT" method outlined on:
 
@@ -12,10 +12,13 @@
 """
 import sys
 import numpy
+import argparse
 import glob
 
 from PIL import Image
 from scipy import fftpack
+from string import ascii_lowercase
+from multiprocessing import Pool
 
 
 def calculate_dct_hash(image):
@@ -69,15 +72,22 @@ def calculate_DCTII_2D(matrix):
     return fftpack.dct(fftpack.dct(a.T).T)
 
 
-def main(argv):
+def hash_file(filepath):
+    try:
+        image = Image.open(filepath)
+        hash = calculate_dct_hash(image)
+        print "{0!s} {1}".format(hash, filepath)
+    except:
+        pass
 
-    for filepath in glob.iglob("covers/v/*"):
-        try:
-            image = Image.open(filepath)
-            hash = calculate_dct_hash(image)
-            print "{0!s} {1}".format(hash, filepath)
-        except:
-            print "NaN {0}".format(filepath)
+
+def main(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directory", help="directory to scan")
+    args = parser.parse_args()
+
+    pool = Pool(8)
+    image_hashes = pool.map(hash_file, glob.iglob("{0!s}/*".format(args.directory)))
 
 
 if __name__ == "__main__":
