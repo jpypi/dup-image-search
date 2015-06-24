@@ -76,9 +76,12 @@ def main(argv):
     parser.add_argument("filepath")
     args = parser.parse_args()
 
-    image = Image.open(args.filepath)
-    hash = calculate_dct_hash(image)
-    print "{0} {1}".format(hash, args.filepath)
+    try:
+        image = Image.open(args.filepath)
+        hash = calculate_dct_hash(image)
+        print "{0!s} {1}".format(hash, args.filepath)
+    except:
+        print "NaN {0}".format(args.filepath)
 
 
 if __name__ == "__main__":
