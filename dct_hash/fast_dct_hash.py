@@ -72,23 +72,20 @@ def calculate_DCTII_2D(matrix):
     return fftpack.dct(fftpack.dct(a.T).T)
 
 
-def hash_file(filepath):
-    try:
-        image = Image.open(filepath)
-        hash = calculate_dct_hash(image)
-        print "{0!s} {1}".format(hash, filepath)
-    except:
-        pass
-
-
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", help="directory to scan")
     args = parser.parse_args()
 
-    pool = Pool(8)
-    image_hashes = pool.map(hash_file, glob.iglob("{0!s}/*".format(args.directory)))
-
+    with open("dct_hashes.txt", "a") as f:
+        for filepath in glob.iglob("{0!s}/*".format(args.directory)):
+            try:
+                image = Image.open(filepath)
+                hash = calculate_dct_hash(image)
+                f.write("{0!s},{1!s}\n".format(filepath, hash))
+                #print "{0!s},{1}\n".format(k, dct_hashes[k])
+            except:
+                pass
 
 if __name__ == "__main__":
     main(sys.argv[1:])

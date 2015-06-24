@@ -13,6 +13,6 @@ do
     SUB_DIR="${BASE_DIR}/${i}"
 
     #ls -1 -Q $SUB_DIR | xargs -i{} python dct_hash.py $SUB_DIR/{} >> dct_hashes.txt
-    python fast_dct_hash.py $SUB_DIR >> dct_hashes.txt
+    python fast_dct_hash.py $SUB_DIR
 
 done
