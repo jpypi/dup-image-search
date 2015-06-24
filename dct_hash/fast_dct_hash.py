@@ -82,8 +82,7 @@ def main(argv):
             try:
                 image = Image.open(filepath)
                 hash = calculate_dct_hash(image)
-                f.write("{0!s},{1!s}\n".format(filepath, hash))
-                #print "{0!s},{1}\n".format(k, dct_hashes[k])
+                f.write("{0!s},{1!s}\n".format(hash, filepath))
             except:
                 pass
 

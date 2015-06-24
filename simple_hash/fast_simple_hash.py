@@ -46,23 +46,20 @@ def calculate_simple_hash(image):
 
     return hash
 
-
-def hash_file(filepath):
-    try:
-        image = Image.open(filepath)
-        hash = calculate_simple_hash(image)
-        print "{0!s} {1}".format(hash, filepath)
-    except:
-        pass
-
-
+ 
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", help="directory to scan")
     args = parser.parse_args()
 
-    pool = Pool(8)
-    image_hashes = pool.map(hash_file, glob.iglob("{0!s}/*".format(args.directory)))
+    with open("simple_hashes.txt", "a") as f:
+        for filepath in glob.iglob("{0!s}/*".format(args.directory)):
+            try:
+                image = Image.open(filepath)
+                hash = calculate_simple_hash(image)
+                f.write("{0!s},{1!s}\n".format(hash, filepath))
+            except:
+                pass
 
 
 if __name__ == "__main__":
