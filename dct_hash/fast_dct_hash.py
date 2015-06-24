@@ -17,7 +17,6 @@ import glob
 
 from PIL import Image
 from scipy import fftpack
-from string import ascii_lowercase
 from multiprocessing import Pool
 
 
@@ -72,19 +71,21 @@ def calculate_DCTII_2D(matrix):
     return fftpack.dct(fftpack.dct(a.T).T)
 
 
-def main(argv):
+def hash_directory(directory):
+    with open("dct_hashes.txt", "a") as f:
+        for filepath in glob.iglob("{0!s}/*".format(directory)):
+            try:
+                image = Image.open(filepath)
+                image_hash = calculate_dct_hash(image)
+                f.write("{0!s},{1!s}\n".format(image_hash, filepath))
+            except:
+                pass
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", help="directory to scan")
     args = parser.parse_args()
 
-    with open("dct_hashes.txt", "a") as f:
-        for filepath in glob.iglob("{0!s}/*".format(args.directory)):
-            try:
-                image = Image.open(filepath)
-                hash = calculate_dct_hash(image)
-                f.write("{0!s},{1!s}\n".format(hash, filepath))
-            except:
-                pass
+    hash_directory(args.directory)
 
-if __name__ == "__main__":
-    main(sys.argv[1:])
