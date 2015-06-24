@@ -12,10 +12,12 @@
 """
 import sys
 import argparse
+import math
 import numpy
 
-from scipy import fftpack
 from PIL import Image
+from scipy import fftpack
+from copy import deepcopy
 
 
 def calculate_dct_hash(image):
@@ -47,8 +49,10 @@ def calculate_dct_hash(image):
     average = numpy.mean(smaller_dct)
 
     hash = 0
-    for i in xrange(0, len(imgdata)):
-        hash |= (imgdata[i] > average) << i
+    i = 0
+    for x in smaller_dct.flat:
+        hash |= (x > average) << i
+        i += 1
 
     return hash
 
@@ -63,21 +67,18 @@ def calculate_DCTII_2D(matrix):
 
     We are using the plain version, which seems to work better.
     """
-
-    return fftpack.dct(fftpack.dct(numpy.array(matrix), axis=0), axis=1)
+    a = numpy.reshape(numpy.array(matrix), (32, 32))
+    return fftpack.dct(fftpack.dct(a.T).T)
 
 
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("filepath")
-    parser.add_argument("-a", "--algorithm", default="simple",
-                        help="Algorithm to use.  One of: [simple, dct]")
     args = parser.parse_args()
-    args.algorithm = args.algorithm.lower()
 
     image = Image.open(args.filepath)
     hash = calculate_dct_hash(image)
-    print "DCT hash = {0!s}".format(hash)
+    print "{0} {1}".format(hash, args.filepath)
 
 
 if __name__ == "__main__":
