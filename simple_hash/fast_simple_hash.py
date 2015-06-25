@@ -46,7 +46,7 @@ def calculate_simple_hash(image):
 
     return image_hash
 
- 
+
 def hash_directory(directory):
     with open("simple_hashes.txt", "a") as f:
         for filepath in glob.iglob("{0!s}/*".format(directory)):
