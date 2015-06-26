@@ -32,6 +32,7 @@
 """
 import sys
 import argparse
+import json
 
 from PySide.QtGui import QApplication
 from PySide.QtGui import QMainWindow
@@ -51,7 +52,13 @@ class MainUI(QMainWindow):
         super(MainUI, self).__init__()
 
         self.title = "Image Verification GUI"
-        self.file_handle = open(filepath, "r")
+        fd = open(filepath, "r")
+        self.sets = json.load(fd)
+        fd.close()
+
+        self.current_set_index = -1
+        self.within_set_index = -1
+
         self.init_ui()
 
     def init_ui(self):
@@ -109,22 +116,39 @@ class MainUI(QMainWindow):
         self.close()
 
     def load_more_images(self):
-        line = self.file_handle.readline()
-        if(line):
-            line_arr = line.strip().split(",")
-            assert(len(line_arr) == 2)
 
-            self.image1_filepath = line_arr[0].strip()
-            self.image2_filepath = line_arr[1].strip()
+        if(self.within_set_index == -1):
+            print "New set."
+            self.current_set_index += 1
+            arr = self.sets["sets"][self.current_set_index]
 
-            self.image1.setPixmap(QPixmap(self.image1_filepath).scaledToHeight(192))
-            self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
+            if(len(arr) == 0):
+                ret = QMessageBox.information(self, "Image Verification UI",
+                                             "Ran out of images to compare.",
+                                              QMessageBox.Ok)
+                self.close()
+            
+            self.image1_filepath = arr[0].strip()
+            self.image2_filepath = arr[1].strip()
+
+            print self.image1_filepath
+            print self.image2_filepath
+
+            #self.image1.setPixmap(QPixmap(self.image1_filepath).scaledToHeight(192))
+            #self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
+            self.within_set_index = 2
 
         else:
-            ret = QMessageBox.information(self, "Image Verification UI",
-                                          "Ran out of images to compare.",
-                                          QMessageBox.Ok)
-            self.close()
+            arr = self.sets["sets"][self.current_set_index]
+            if(self.within_set_index >= len(arr)):
+                self.within_set_index = -1
+                self.load_more_images()
+            else:
+                self.image2_filepath = arr[self.within_set_index].strip()
+                print self.image2_filepath
+                #self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
+                self.within_set_index += 1
+
 
     def handle_yes_pressed(self):
         with open("user_results.txt", "a") as f:
