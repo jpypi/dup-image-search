@@ -131,11 +131,11 @@ class MainUI(QMainWindow):
             self.image1_filepath = arr[0].strip()
             self.image2_filepath = arr[1].strip()
 
-            print self.image1_filepath
-            print self.image2_filepath
+            #print self.image1_filepath
+            #print self.image2_filepath
 
-            #self.image1.setPixmap(QPixmap(self.image1_filepath).scaledToHeight(192))
-            #self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
+            self.image1.setPixmap(QPixmap(self.image1_filepath).scaledToHeight(192))
+            self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
             self.within_set_index = 2
 
         else:
@@ -145,8 +145,8 @@ class MainUI(QMainWindow):
                 self.load_more_images()
             else:
                 self.image2_filepath = arr[self.within_set_index].strip()
-                print self.image2_filepath
-                #self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
+                #print self.image2_filepath
+                self.image2.setPixmap(QPixmap(self.image2_filepath).scaledToHeight(192))
                 self.within_set_index += 1
 
 
