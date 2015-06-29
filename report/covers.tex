@@ -392,6 +392,23 @@ DCT (assuming sets greater than 4 are 0\%)     & 45\%  \\ \hline
 \captionof{table}{Combined Results for Each Algorithm}
 \end{minipage}
 
+Finally, we ran the results for first taking the simple hash and then only
+predicting the files were similar if the DCT hashes also matched.
+
+\begin{minipage}{\linewidth}
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Correct & Incorrect & \% Correct \\ \hline
+1817    & 100      & 94.7\% \\ \hline
+\end{tabular}
+\captionof{table}{Results for Simple Then DCT}
+\end{minipage}
+
+It is worth noting that the accuracy was higher than either algorithm alone,
+however the number of duplicates found overall was smaller, which would lead to
+more false-negatives (which we did not measure).
+
 \section{Analysis of Results}
 
 We gained great insight into what the algorithms did and did not see once
