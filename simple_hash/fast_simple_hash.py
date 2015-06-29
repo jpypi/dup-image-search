@@ -40,27 +40,27 @@ def calculate_simple_hash(image):
     imgdata = image.getdata()
     average = numpy.mean(imgdata)
 
-    hash = 0
+    image_hash = 0
     for i in xrange(0, len(imgdata)):
-        hash |= (imgdata[i] > average) << i
+        image_hash |= (imgdata[i] > average) << i
 
-    return hash
+    return image_hash
 
- 
-def main(argv):
-    parser = argparse.ArgumentParser()
-    parser.add_argument("directory", help="directory to scan")
-    args = parser.parse_args()
 
+def hash_directory(directory):
     with open("simple_hashes.txt", "a") as f:
-        for filepath in glob.iglob("{0!s}/*".format(args.directory)):
+        for filepath in glob.iglob("{0!s}/*".format(directory)):
             try:
                 image = Image.open(filepath)
-                hash = calculate_simple_hash(image)
-                f.write("{0!s},{1!s}\n".format(hash, filepath))
+                image_hash = calculate_simple_hash(image)
+                f.write("{0!s},{1!s}\n".format(image_hash, filepath))
             except:
                 pass
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directory", help="directory to scan")
+    args = parser.parse_args()
+
+    hash_directory(args.directory)
