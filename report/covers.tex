@@ -214,7 +214,9 @@ these algorithms can be found at:
         img.resize(32, 32)  # resize the image to 32x32
         img.convert_to_grayscale()
 
-        transformed_matrix = dctII2d(dctII2d(img.pixels().transpose()).transpose())
+        px = img.pixels()
+
+        transformed_matrix = dctII2d(dctII2d(px.transpose()).transpose())
         
         # take the top-left only
         top_left = transformed_matrix.subset(8, 8)
