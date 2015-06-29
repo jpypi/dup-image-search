@@ -31,7 +31,7 @@
 \begin{document}
 
 \title{CS5950 - Machine Learning \\
-       Identication of Duplicate Album Covers}
+       Identification of Duplicate Album Covers}
 
 \author{Arrendondo, Brandon\\
         Jenkins, James\\
@@ -232,7 +232,7 @@ these algorithms can be found at:
 
 \end{lstlisting}
 
-This algorithm uses the 2D Dicrete Cosine Transform, detailed here:
+This algorithm uses the 2D Discrete Cosine Transform, detailed here:
 
 \url{http://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-II}
 
@@ -265,7 +265,7 @@ identify matching hashes and calculate that, of the 997,131 images:
 
 After removing the exact duplicates and corrupt images, we then ran each of our
 hashes on the full dataset.  After the runs were complete, we compiled the
-combined MD5 hash, simple hash, and DCT hash into a SQlite database.  We shared
+combined MD5 hash, simple hash, and DCT hash into a SQLite database.  We shared
 this database in a Google Drive folder with the team for use in analysis.  We
 can make this database publicly available, but it is fairly large (the bzip2
 compressed database is 63.2 MB).
@@ -287,8 +287,8 @@ We tried another approach of building up a database slowly and checking with
 each insertion if the added image is within 5 of any image already in the
 database.  That too, was fairly slow (manageable, but slow).
 
-We decided to refocus, instead, on the determination of what our accuracies
-were for hamming distance zero only.  It is very easy to calculate the hamming
+We decided to refocus, instead, on the determination of what the accuracy for
+hamming distance zero was.  It is very easy to calculate the hamming
 distance of zero, since we only need to check the database for sets of matching
 hashes.
 
@@ -329,7 +329,7 @@ definitely include:
 \end{itemize}
 
 We all noticed we had a few misclicks here and there, which will contribute to
-some error.  Also, each individual had a differring definition of what a
+some error.  Also, each individual had a differing definition of what a
 ``similar'' album cover would be, which led to some images being accepted by
 one person that may not otherwise have been accepted by another.
 
@@ -352,19 +352,45 @@ Third Set    & 1204    & 2378      & 33.6\% \\ \hline
 \begin{tabular}{|l|l|l|l|}
 \hline
 Images Scanned & Correct & Incorrect & \% Correct \\ \hline
-First Set    & 1049    & 678      & 60.7\% \\ \hline
-Second Set   & Pending    & Pending & Pending\% \\ \hline
-Third Set    & 1280    & 420      & 75.3\% \\ \hline
+First Set       & 1049    & 678      & 60.7\% \\ \hline
+Second Set      & 841     & 964      & 46.6\% \\ \hline
+Third Set       & 1280    & 420      & 75.3\% \\ \hline
+Already Matched & 807     & 49       & 94.2\% \\ \hline
 \end{tabular}
 \captionof{table}{Results for DCT}
 \end{minipage}
 
-Take note of the fact that we pruned the sets greater than 4, which we assume
-had zero accuracy.
+The ``Already Matched'' column were images from the database that we had
+already manually matched from the Simple algorithm analysis that we did not
+have to re-evaluate.  Take note of the fact that we pruned the sets greater 
+than 4, which we assume had zero accuracy.
 
-%PENDING FOR TOMORROW:  
-%Detail number of sets removed, show table with updated accuracies assuming 0%
-%Show pruned results in DCT because we already evaluated them.
+\begin{minipage}{\linewidth}
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Algorithm       & Count \\ \hline
+Simple          & 14817 \\ \hline
+DCT             & 2833  \\ \hline
+\end{tabular}
+\captionof{table}{Count of Images in Sets Above Length 4}
+\end{minipage}
+
+If we were to introduce other algorithms, we should be able to reduce the sets
+above 4 to only those that legitimately match.
+
+\begin{minipage}{\linewidth}
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Algorithm                           & Percentage Correct \\ \hline
+Simple (sets less than 5)                   & 37\%  \\ \hline
+DCT (sets less than 5)                      & 81\%  \\ \hline
+Simple (assuming sets greater than 4 are 0\%)  & 16\%  \\ \hline
+DCT (assuming sets greater than 4 are 0\%)     & 45\%  \\ \hline
+\end{tabular}
+\captionof{table}{Combined Results for Each Algorithm}
+\end{minipage}
 
 \section{Analysis of Results}
 
@@ -432,11 +458,11 @@ This is also a project which lends itself readily to some massive
 parallelization step - divide and conquer works well on this as many of the
 steps are independent (like the individual image hashing).  Per some of our
 discussions, offloading much of the image processing work to a graphics
-processor would likely signicantly speed up the algorithms, as they are
+processor would likely significantly speed up the algorithms, as they are
 tailored to doing these kinds of transformations.
 
-We would also map out the accuracies for hamming weights 1, 2, 3, and 4, to see
-how rapid the decline in accracy is.  Honestly, this is what we ran out of time
+We would also map out the accuracy for hamming weights 1, 2, 3, and 4, to see
+how rapid the decline in accuracy is.  Honestly, this is what we ran out of time
 to do - in hindsight we would have worked with much smaller datasets first as a
 training step before moving to the full dataset for testing.
 
